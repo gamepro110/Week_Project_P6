@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private GameObject m_camera;
     [SerializeField, Range(5, 100)] private int m_CameraDistance;
+    [SerializeField] private Trap m_heldTrap = null;
 
     private Transform CameraTransform;
 
@@ -13,7 +14,6 @@ public class Player : MonoBehaviour
     {
         CameraTransform.position = Vector3.Lerp(CameraTransform.position, gameObject.transform.position, .1f);
     }
-
 
     private void Start()
     {
@@ -23,5 +23,10 @@ public class Player : MonoBehaviour
     private void Update()
     {
         UpdateCamera();
+    }
+
+    public void PickupTrap(Trap _trap)
+    {
+        m_heldTrap = _trap;
     }
 }
