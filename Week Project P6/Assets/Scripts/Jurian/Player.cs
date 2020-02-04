@@ -7,17 +7,19 @@ public class Player : MonoBehaviour
     #region Variables
     [Header("Setup")]
     [SerializeField] private Camera Camera = null;
-    [SerializeField, Range(0, 3), Tooltip("Distance that'll be set between the player and the camera")] private float m_CameraDistance = 1;
+    [SerializeField, Tooltip("Distance that'll be set between the player and the camera")] private Vector3 m_CameraOffset = new Vector3();
     
     [Header("Movement components")]
     [SerializeField, Range(10, 100), Tooltip("The speed cap in magnitudes (Rig.Velocity).Magnitude (excluding Y)")] private float m_SpeedVelocityCap = 10;
     [SerializeField, Range(10, 100), Tooltip("The max jump height velocity cap in magnitudes (Rig.Velocity).Magnitude (excluding X and Z)")] private float m_JumpVelocityCap = 10;
 
+    [SerializeField] private Vector3 WalkSpeed;
+    [SerializeField] private Vector3 JumpPower;
+
     private Transform m_CameraTransform;
     private Rigidbody m_Rig;
 
-    public Vector3 WalkSpeed { get; set; }
-    public Vector3 JumpPower { get; set; }
+    
     #endregion
     #region Custom Functions
 
@@ -28,7 +30,7 @@ public class Player : MonoBehaviour
     /// <param name="_Euler"></param>
     private void UpdateCamera(Vector3 _Pos)
     {
-        m_CameraTransform.position = Vector3.Lerp(m_CameraTransform.position + new Vector3(0, 0, m_CameraDistance), _Pos, .1f);
+        m_CameraTransform.position = _Pos + m_CameraOffset;
         m_CameraTransform.LookAt(gameObject.transform);
     }
 
@@ -54,19 +56,26 @@ public class Player : MonoBehaviour
     }
     private void Update()
     {
+        Vector3 _tempVelocity = new Vector3();
         if (Input.GetKey(KeyCode.A))
         {
-            AddForce(new Vector3(-1,0,0));
+            _tempVelocity = WalkSpeed;
         }
         else if (Input.GetKey(KeyCode.D))
         {
-            //WalkSpeed +=
+            _tempVelocity = -WalkSpeed;
         }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            _tempVelocity += JumpPower;
+        }
+        AddForce(_tempVelocity);
     }
     private void LateUpdate()
     {
         UpdateCamera(gameObject.transform.position);
-        AddForce(WalkSpeed + JumpPower);
+        //AddForce(WalkSpeed + JumpPower);
     }
                                                                                                                                                                                                     #endregion
 }
