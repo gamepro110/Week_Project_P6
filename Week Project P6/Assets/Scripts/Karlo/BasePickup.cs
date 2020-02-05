@@ -9,7 +9,12 @@ public enum PickupType
 
 public class BasePickup : MonoBehaviour
 {
-    [SerializeField] protected Player m_player;
+    protected Player m_player;
+
+    private void Start()
+    {
+        m_player = FindObjectOfType<Player>();
+    }
 
     private void OnTriggerEnter(Collider other)
     {

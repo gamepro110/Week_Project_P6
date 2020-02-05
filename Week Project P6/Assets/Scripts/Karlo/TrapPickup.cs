@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TrapPickup : BasePickup
 {
-    [SerializeField] private Trap m_trap;
+    [SerializeField] private Trap m_trap = null;
 
     protected override void DoPickup()
     {

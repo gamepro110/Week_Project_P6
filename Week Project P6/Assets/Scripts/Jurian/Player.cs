@@ -8,22 +8,23 @@ public class Player : MonoBehaviour
 
     [Header("Setup")]
     [SerializeField] private Camera Camera = null;
+
     [SerializeField, Tooltip("Distance that'll be set between the player and the camera")] private Vector3 m_CameraOffset = new Vector3();
-    
+
     [Header("Movement components")]
     [SerializeField, Range(10, 100), Tooltip("The speed cap in magnitudes (Rig.Velocity).Magnitude (excluding Y)")] private float m_SpeedVelocityCap = 10;
 
     [SerializeField, Range(10, 100), Tooltip("The max jump height velocity cap in magnitudes (Rig.Velocity).Magnitude (excluding X and Z)")] private float m_JumpVelocityCap = 10;
     [SerializeField] private Trap m_heldTrap = null;
 
-    [SerializeField] private Vector3 WalkSpeed;
-    [SerializeField] private Vector3 JumpPower;
+    [SerializeField] private Vector3 WalkSpeed = Vector3.zero;
+    [SerializeField] private Vector3 JumpPower = Vector3.zero;
 
     private Transform m_CameraTransform;
     private Rigidbody m_Rig;
 
-    
-    #endregion
+    #endregion Variables
+
     #region Custom Functions
 
     /// <summary>
@@ -63,6 +64,8 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        SpawnTrapCheck();
+
         Vector3 _tempVelocity = new Vector3();
         if (Input.GetKey(KeyCode.A))
         {
@@ -91,5 +94,17 @@ public class Player : MonoBehaviour
     public void PickupTrap(Trap _trap)
     {
         m_heldTrap = _trap;
+    }
+
+    public void SpawnTrapCheck()
+    {
+        if (m_heldTrap != null)
+        {
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                Instantiate(m_heldTrap, transform.position, Quaternion.identity);
+                m_heldTrap = null;
+            }
+        }
     }
 }

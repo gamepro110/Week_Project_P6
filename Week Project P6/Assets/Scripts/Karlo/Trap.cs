@@ -15,7 +15,7 @@ public class Trap : MonoBehaviour
     {
         if (other.gameObject == m_player.gameObject)
         {
-            Debug.Log("yeet");
+            Debug.Log("Hit Player");
         }
     }
 }
