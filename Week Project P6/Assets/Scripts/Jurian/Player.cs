@@ -82,7 +82,7 @@ public class Player : MovementMechanics
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            RaycastHit2D raycastHit = Physics2D.Raycast(transform.position, -transform.up, m_PlayerCollider.bounds.extents.y+.1f, LayerMask.GetMask("StaticFloor"));
+            RaycastHit2D raycastHit = Physics2D.Raycast(transform.position, -transform.up, m_PlayerCollider.bounds.extents.y + .1f, LayerMask.GetMask("StaticFloor"));
             if (raycastHit.collider)
             {
                 m_CurrentJump = m_JumpPower;
@@ -104,7 +104,8 @@ public class Player : MovementMechanics
         m_Rig.velocity = AddForce(m_WalkSpeed + m_CurrentJump, m_Rig, m_SpeedVelocityCap, m_JumpVelocityCap);
         m_CurrentJump = new Vector2();
     }
-    #endregion
+
+    #endregion Unity built-in Functions
 
     public void PickupTrap(Trap _trap)
     {
@@ -117,7 +118,7 @@ public class Player : MovementMechanics
         {
             if (Input.GetKeyDown(KeyCode.F))
             {
-                RaycastHit2D raycastHit = Physics2D.Raycast(transform.position, -transform.up, m_PlayerCollider.bounds.extents.y + .1f, LayerMask.GetMask("Floor"));
+                RaycastHit2D raycastHit = Physics2D.Raycast(transform.position, -transform.up, m_PlayerCollider.bounds.extents.y + .1f, LayerMask.GetMask("StaticFloor"));
                 if (raycastHit.collider)
                 {
                     Vector3 spawnpos = transform.position;
