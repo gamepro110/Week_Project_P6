@@ -14,10 +14,10 @@ TagManager:
   - 
   - 
   - Player
-  - Invincible State
+  - IgnorePlayer
   - StaticFloor
   - Wall
-  - 
+  - Floor
   - 
   - 
   - 
