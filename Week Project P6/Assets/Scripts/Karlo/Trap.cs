@@ -2,14 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum PickupType
+public class Trap : MonoBehaviour
 {
-    Trap,
-}
-
-public class BasePickup : MonoBehaviour
-{
-    protected Player m_player;
+    private Player m_player = null;
 
     private void Start()
     {
@@ -20,12 +15,7 @@ public class BasePickup : MonoBehaviour
     {
         if (collision.gameObject == m_player.gameObject)
         {
-            DoPickup();
-            gameObject.SetActive(false);
+            Debug.Log("Hit Player");
         }
-    }
-
-    protected virtual void DoPickup()
-    {
     }
 }
