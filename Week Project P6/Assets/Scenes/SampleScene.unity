@@ -153,6 +153,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 326e3316cb265384cb79d3dc51a3c0f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_player: {fileID: 0}
+  m_trap: {fileID: 0}
 --- !u!65 &3779859
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -533,6 +535,7 @@ MonoBehaviour:
   m_CameraDistance: 0.57
   m_SpeedVelocityCap: 10
   m_JumpVelocityCap: 10
+  m_heldTrap: {fileID: 0}
 --- !u!54 &1950299173
 Rigidbody:
   m_ObjectHideFlags: 0

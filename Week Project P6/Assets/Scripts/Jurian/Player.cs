@@ -5,12 +5,15 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     #region Variables
+
     [Header("Setup")]
     [SerializeField] private Camera Camera = null;
+
     [SerializeField, Range(0, 3), Tooltip("Distance that'll be set between the player and the camera")] private float m_CameraDistance = 1;
+
     [Header("Movement components")]
-    
     [SerializeField, Range(10, 100), Tooltip("The speed cap in magnitudes (Rig.Velocity).Magnitude (excluding Y)")] private float m_SpeedVelocityCap = 10;
+
     [SerializeField, Range(10, 100), Tooltip("The max jump height velocity cap in magnitudes (Rig.Velocity).Magnitude (excluding X and Z)")] private float m_JumpVelocityCap = 10;
     [SerializeField] private Trap m_heldTrap = null;
 
@@ -19,7 +22,9 @@ public class Player : MonoBehaviour
 
     public Vector3 WalkSpeed { get; set; }
     public Vector3 JumpPower { get; set; }
-    #endregion
+
+    #endregion Variables
+
     #region Custom Functions
 
     /// <summary>
@@ -46,34 +51,36 @@ public class Player : MonoBehaviour
 
         m_Rig.velocity = new Vector3(_CappedXZ.x, _CappedY, _CappedXZ.z);
     }
-                                                                                                                                                                                                            #endregion
+
+    #endregion Custom Functions
+
     #region Unity built-in Functions
-    
+
     private void Start()
     {
         m_CameraTransform = Camera.transform;
         m_Rig = gameObject.GetComponent<Rigidbody>();
     }
-    
+
     private void Update()
     {
         if (Input.GetKey(KeyCode.A))
         {
-            AddForce(new Vector3(-1,0,0));
+            AddForce(new Vector3(-1, 0, 0));
         }
         else if (Input.GetKey(KeyCode.D))
         {
             //WalkSpeed +=
         }
     }
-    }
-    
+
     private void LateUpdate()
     {
         UpdateCamera(gameObject.transform.position);
         AddForce(WalkSpeed + JumpPower);
     }
-                                                                                                                                                                                                    #endregion
+
+    #endregion Unity built-in Functions
 
     public void PickupTrap(Trap _trap)
     {
