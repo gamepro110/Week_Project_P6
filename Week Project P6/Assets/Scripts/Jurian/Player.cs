@@ -70,7 +70,7 @@ public class Player : MovementMechanics
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            RaycastHit2D raycastHit = Physics2D.Raycast(transform.position, -transform.up, m_PlayerCollider.bounds.extents.y+.1f, LayerMask.GetMask("Floor"));
+            RaycastHit2D raycastHit = Physics2D.Raycast(transform.position, -transform.up, m_PlayerCollider.bounds.extents.y+.1f, LayerMask.GetMask("StaticFloor"));
             if (raycastHit.collider)
             {
                 m_CurrentJump = m_JumpPower;
