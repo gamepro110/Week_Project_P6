@@ -13,6 +13,6 @@ public class GameManager : MonoBehaviour
     public void Bumped()
     {
         player.Invincible = true;
-
+        // interact with AI (catch up)
     }
 }

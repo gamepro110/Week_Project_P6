@@ -15,8 +15,8 @@ TagManager:
   - 
   - Player
   - Invincible State
-  - Floor
-  - 
+  - StaticFloor
+  - Wall
   - 
   - 
   - 

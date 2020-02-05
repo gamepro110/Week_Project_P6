@@ -5,14 +5,13 @@ using UnityEngine;
 
 public enum ObjectTypes
 {
-    Null,
     Wall,
     Floor
 }
 
 public class BumpMechanic : MonoBehaviour
 {
-    [SerializeField] private ObjectTypes Type = ObjectTypes.Null;
+    [SerializeField] private ObjectTypes Type = ObjectTypes.Floor;
     private GameObject Player;
     private GameManager manager;
 
