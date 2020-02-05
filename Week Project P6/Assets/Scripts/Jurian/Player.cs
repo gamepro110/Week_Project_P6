@@ -118,7 +118,7 @@ public class Player : MovementMechanics
         {
             if (Input.GetKeyDown(KeyCode.F))
             {
-                RaycastHit2D raycastHit = Physics2D.Raycast(transform.position, -transform.up, m_PlayerCollider.bounds.extents.y + .1f, LayerMask.GetMask("StaticFloor"));
+                RaycastHit2D raycastHit = Physics2D.Raycast(transform.position, -transform.up, m_PlayerCollider.bounds.extents.y + .1f);
                 if (raycastHit.collider)
                 {
                     Vector3 spawnpos = transform.position;
