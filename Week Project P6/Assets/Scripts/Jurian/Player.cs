@@ -28,8 +28,10 @@ public class Player : MovementMechanics
 
     private Collider2D m_PlayerCollider;
     private float m_time;
-    private bool invincible;
 
+    private bool Debounce;
+
+    private bool invincible;
     /// <summary>
     /// Set the invincible state to true or false
     /// </summary>
@@ -65,16 +67,14 @@ public class Player : MovementMechanics
     private IEnumerator SetInvincible()
     {
         Vector2 _OldWalkspeed = m_WalkSpeed;
-        gameObject.layer = 9;
         m_Rig.velocity = new Vector2();
         m_WalkSpeed = new Vector2();
         StartCoroutine(Flicker());
         yield return new WaitForSeconds(.2f);
         m_WalkSpeed = _OldWalkspeed;
         yield return new WaitForSeconds(3f);
-        
-        gameObject.layer = 8;
         invincible = false;
+        Debounce = false;
     }
 
     #endregion Custom Functions
@@ -92,7 +92,7 @@ public class Player : MovementMechanics
     {
         m_time += Time.deltaTime;
         SpawnTrapCheck();
-        RaycastHit2D raycastHit = Physics2D.Raycast(transform.position, -transform.up, m_PlayerCollider.bounds.extents.y + .1f, LayerMask.GetMask("StaticFloor"));
+        RaycastHit2D raycastHit = Physics2D.Raycast(transform.position, -transform.up, m_PlayerCollider.bounds.extents.y + .1f, LayerMask.GetMask("StaticFloor") + LayerMask.GetMask("Floor"));
 
         LastPos = transform.position;
 
@@ -103,8 +103,9 @@ public class Player : MovementMechanics
                 m_WalkSpeed = new Vector2(m_WalkSpeed.x, -100);
             }
         }
-        if (invincible && gameObject.layer != 9)
+        if (invincible && !Debounce)
         {
+            Debounce = true;
             StartCoroutine(SetInvincible());
         }
 

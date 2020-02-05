@@ -15,6 +15,12 @@ public class BumpMechanic : MonoBehaviour
     private GameObject Player;
     private GameManager manager;
 
+    IEnumerator Reset()
+    {
+        yield return new WaitForSeconds(3.2f);
+        transform.parent.gameObject.layer = 12;
+    }
+
     private void Start()
     {
         Player = FindObjectOfType<Player>().gameObject;
@@ -25,6 +31,9 @@ public class BumpMechanic : MonoBehaviour
         if (collision.gameObject.GetInstanceID() == Player.GetInstanceID() && Type == ObjectTypes.Wall)
         {
             manager.Bumped();
+            transform.parent.gameObject.layer = 9;
+            gameObject.layer = 9;
+            StartCoroutine(Reset());
         }
     }
 }
