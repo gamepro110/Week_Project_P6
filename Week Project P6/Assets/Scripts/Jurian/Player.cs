@@ -13,10 +13,10 @@ public class Player : MovementMechanics
 
     [Header("Movement components")]
     [SerializeField, Range(10, 100), Tooltip("The speed cap in magnitudes (Rig.Velocity).Magnitude (excluding Y)")] private float m_SpeedVelocityCap = 10;
-
+    [SerializeField, Range(1f, 10f)] private float m_maxDashDebounce = 3f;
     [SerializeField, Range(10, 100), Tooltip("The max jump height velocity cap in magnitudes (Rig.Velocity).Magnitude (excluding X and Z)")] private float m_JumpVelocityCap = 10;
+    
     [SerializeField] private Trap m_heldTrap = null;
-
     [SerializeField] private Vector2 m_WalkSpeed = new Vector2();
     [SerializeField] private Vector2 m_JumpPower = new Vector2();
 
@@ -27,7 +27,7 @@ public class Player : MovementMechanics
     private Vector3 LastPos;
 
     private Collider2D m_PlayerCollider;
-
+    private float m_time;
     private bool invincible;
 
     /// <summary>
@@ -42,18 +42,37 @@ public class Player : MovementMechanics
     #endregion Variables
 
     #region Custom Functions
+    private IEnumerator Flicker()
+    {
+        SpriteRenderer renderer = GetComponent<SpriteRenderer>();
+        while (invincible)
+        {
+            yield return new WaitForSeconds(.2f);
+            renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, .5f);
+            yield return new WaitForSeconds(.2f);
+            renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, 1f);
+        }
+    }
+    private IEnumerator Dash()
+    {
+        m_time = 0f;
+        Vector2 _OldVelocity = m_WalkSpeed;
+        m_WalkSpeed = new Vector2(m_WalkSpeed.x * 3, 0);
+        yield return new WaitForSeconds(1f);
+        m_WalkSpeed = _OldVelocity;
 
+    }
     private IEnumerator SetInvincible()
     {
         Vector2 _OldWalkspeed = m_WalkSpeed;
-        m_WalkSpeed = new Vector2(5, 0);
-        m_CurrentJump = new Vector2(0, 250);
         gameObject.layer = 9;
-        yield return new WaitForSeconds(.5f);
+        m_Rig.velocity = new Vector2();
         m_WalkSpeed = new Vector2();
-        yield return new WaitForSeconds(1f);
+        StartCoroutine(Flicker());
+        yield return new WaitForSeconds(.2f);
         m_WalkSpeed = _OldWalkspeed;
         yield return new WaitForSeconds(3f);
+        
         gameObject.layer = 8;
         invincible = false;
     }
@@ -71,32 +90,44 @@ public class Player : MovementMechanics
 
     private void Update()
     {
+        m_time += Time.deltaTime;
         SpawnTrapCheck();
+        RaycastHit2D raycastHit = Physics2D.Raycast(transform.position, -transform.up, m_PlayerCollider.bounds.extents.y + .1f, LayerMask.GetMask("StaticFloor"));
 
         LastPos = transform.position;
 
-        if (Input.GetKeyDown(KeyCode.D))
+        if (Input.GetKeyDown(KeyCode.S)) // Dashdown
         {
-            //TODO roll
-        }
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            RaycastHit2D raycastHit = Physics2D.Raycast(transform.position, -transform.up, m_PlayerCollider.bounds.extents.y+.1f, LayerMask.GetMask("StaticFloor"));
-            if (raycastHit.collider)
+            if (!raycastHit.collider)
             {
-                m_CurrentJump = m_JumpPower;
+                m_WalkSpeed = new Vector2(m_WalkSpeed.x, -100);
             }
         }
         if (invincible && gameObject.layer != 9)
         {
             StartCoroutine(SetInvincible());
         }
+
+        if (raycastHit.collider)
+        {
+            if (Input.GetKeyDown(KeyCode.D)) // Roll
+            {
+                if(m_time >= m_maxDashDebounce)
+                    StartCoroutine(Dash());
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space)) // jump
+            {
+                m_CurrentJump = m_JumpPower;
+            }
+
+            m_WalkSpeed = new Vector2(m_WalkSpeed.x, 0);
+        }
     }
 
     private void LateUpdate()
     {
-        m_CameraOffset = Vector3.Lerp(m_CameraOffset, new Vector3(-3 + (-m_Rig.velocity.x / 5), m_CameraOffset.y, m_CameraOffset.z), 1f * Time.deltaTime);
+        m_CameraOffset = Vector3.Lerp(m_CameraOffset, new Vector3(-5 + (-m_Rig.velocity.x / 5), m_CameraOffset.y, m_CameraOffset.z), 1f * Time.deltaTime);
         Vector3 Pos = UpdateCamera(gameObject.transform.position, m_CameraOffset, LastPos);
 
         Camera.transform.position = Pos;
