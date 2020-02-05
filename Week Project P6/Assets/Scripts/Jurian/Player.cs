@@ -39,10 +39,17 @@ public class Player : MovementMechanics
     
     private IEnumerator SetInvincible()
     {
+        Vector2 _OldWalkspeed = m_WalkSpeed;
+        m_WalkSpeed = new Vector2(5, 0);
+        m_CurrentJump = new Vector2(0, 250);
+        gameObject.layer = 9;
+        yield return new WaitForSeconds(.5f);
+        m_WalkSpeed = new Vector2();
+        yield return new WaitForSeconds(1f);
+        m_WalkSpeed = _OldWalkspeed;
+        yield return new WaitForSeconds(3f);
+        gameObject.layer = 8;
         invincible = false;
-        gameObject.layer = LayerMask.GetMask("Invincible State");
-        yield return new WaitForSeconds(2f);
-        gameObject.layer = LayerMask.GetMask("Player");
     }
     #endregion
     #region Unity built-in Functions
@@ -69,10 +76,9 @@ public class Player : MovementMechanics
                 m_CurrentJump = m_JumpPower;
             }
         }
-        if (invincible)
+        if (invincible && gameObject.layer != 9)
         {
             StartCoroutine(SetInvincible());
-            //TODO let the little girl catch up
         }
     }
     private void LateUpdate()
@@ -85,5 +91,5 @@ public class Player : MovementMechanics
         m_Rig.velocity = AddForce(m_WalkSpeed + m_CurrentJump, m_Rig, m_SpeedVelocityCap, m_JumpVelocityCap);
         m_CurrentJump = new Vector2();
     }
-                                                                                                                                                                                                    #endregion
+    #endregion
 }
