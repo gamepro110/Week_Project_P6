@@ -11,9 +11,9 @@ public class Trap : MonoBehaviour
         m_player = FindObjectOfType<Player>();
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (other.gameObject == m_player.gameObject)
+        if (collision.gameObject == m_player.gameObject)
         {
             Debug.Log("Hit Player");
         }

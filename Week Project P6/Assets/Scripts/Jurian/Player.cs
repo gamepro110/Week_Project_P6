@@ -29,18 +29,20 @@ public class Player : MovementMechanics
     private Collider2D m_PlayerCollider;
 
     private bool invincible;
+
     /// <summary>
     /// Set the invincible state to true or false
     /// </summary>
-    public bool Invincible 
-    { 
-        get { return invincible; } 
-        set { invincible = value; } 
+    public bool Invincible
+    {
+        get { return invincible; }
+        set { invincible = value; }
     }
 
-    #endregion
+    #endregion Variables
+
     #region Custom Functions
-    
+
     private IEnumerator SetInvincible()
     {
         invincible = false;
@@ -48,7 +50,9 @@ public class Player : MovementMechanics
         yield return new WaitForSeconds(2f);
         gameObject.layer = LayerMask.GetMask("Player");
     }
-    #endregion
+
+    #endregion Custom Functions
+
     #region Unity built-in Functions
 
     private void Start()
@@ -61,7 +65,7 @@ public class Player : MovementMechanics
     private void Update()
     {
         SpawnTrapCheck();
-        
+
         LastPos = transform.position;
 
         if (Input.GetKeyDown(KeyCode.D))
@@ -71,12 +75,13 @@ public class Player : MovementMechanics
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            RaycastHit2D raycastHit = Physics2D.Raycast(transform.position, -transform.up, m_PlayerCollider.bounds.extents.y+.1f, LayerMask.GetMask("Floor"));
+            RaycastHit2D raycastHit = Physics2D.Raycast(transform.position, -transform.up, m_PlayerCollider.bounds.extents.y + .1f, LayerMask.GetMask("Floor"));
             if (raycastHit.collider)
             {
                 m_CurrentJump = m_JumpPower;
             }
         }
+
         if (invincible)
         {
             StartCoroutine(SetInvincible());
@@ -86,7 +91,7 @@ public class Player : MovementMechanics
 
     private void LateUpdate()
     {
-        m_CameraOffset = Vector3.Lerp(m_CameraOffset, new Vector3(-3+(-m_Rig.velocity.x/5), m_CameraOffset.y, m_CameraOffset.z), 1f * Time.deltaTime);
+        m_CameraOffset = Vector3.Lerp(m_CameraOffset, new Vector3(-3 + (-m_Rig.velocity.x / 5), m_CameraOffset.y, m_CameraOffset.z), 1f * Time.deltaTime);
         Vector3 Pos = UpdateCamera(gameObject.transform.position, m_CameraOffset, LastPos);
 
         Camera.transform.position = Pos;
@@ -108,8 +113,14 @@ public class Player : MovementMechanics
         {
             if (Input.GetKeyDown(KeyCode.F))
             {
-                Instantiate(m_heldTrap, transform.position, Quaternion.identity);
-                m_heldTrap = null;
+                RaycastHit2D raycastHit = Physics2D.Raycast(transform.position, -transform.up, m_PlayerCollider.bounds.extents.y + .1f, LayerMask.GetMask("Floor"));
+                if (raycastHit.collider)
+                {
+                    Vector3 spawnpos = transform.position;
+                    spawnpos.y -= 0.5f;
+                    Instantiate(m_heldTrap, spawnpos, Quaternion.identity);
+                    m_heldTrap = null;
+                }
             }
         }
     }
