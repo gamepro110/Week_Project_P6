@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : MovementMechanics
 {
     #region Variables
 
@@ -17,76 +17,82 @@ public class Player : MonoBehaviour
     [SerializeField, Range(10, 100), Tooltip("The max jump height velocity cap in magnitudes (Rig.Velocity).Magnitude (excluding X and Z)")] private float m_JumpVelocityCap = 10;
     [SerializeField] private Trap m_heldTrap = null;
 
-    [SerializeField] private Vector3 WalkSpeed = Vector3.zero;
-    [SerializeField] private Vector3 JumpPower = Vector3.zero;
+    [SerializeField] private Vector2 m_WalkSpeed = new Vector2();
+    [SerializeField] private Vector2 m_JumpPower = new Vector2();
 
     private Transform m_CameraTransform;
-    private Rigidbody m_Rig;
+    private Rigidbody2D m_Rig;
 
-    #endregion Variables
+    private Vector2 m_CurrentJump;
+    private Vector3 LastPos;
 
+    private Collider2D m_PlayerCollider;
+
+    private bool invincible;
+    /// <summary>
+    /// Set the invincible state to true or false
+    /// </summary>
+    public bool Invincible 
+    { 
+        get { return invincible; } 
+        set { invincible = value; } 
+    }
+
+    #endregion
     #region Custom Functions
-
-    /// <summary>
-    /// Updates the camera's position and rotation smoothly to the given Position and eulerAngle parameter.
-    /// </summary>
-    /// <param name="_Pos"></param>
-    /// <param name="_Euler"></param>
-    private void UpdateCamera(Vector3 _Pos)
+    
+    private IEnumerator SetInvincible()
     {
-        m_CameraTransform.position = _Pos + m_CameraOffset;
-        m_CameraTransform.LookAt(gameObject.transform);
+        invincible = false;
+        gameObject.layer = LayerMask.GetMask("Invincible State");
+        yield return new WaitForSeconds(2f);
+        gameObject.layer = LayerMask.GetMask("Player");
     }
-
-    /// <summary>
-    /// Adds force to the player dependant on the cap of the walk and jump velocity
-    /// </summary>
-    /// <param name="_Velocity"></param>
-    private void AddForce(Vector3 _Velocity)
-    {
-        m_Rig.AddForce(_Velocity);
-
-        Vector3 _CappedXZ = Vector3.ClampMagnitude(new Vector3(m_Rig.velocity.x, 0, m_Rig.velocity.z), m_SpeedVelocityCap);
-        float _CappedY = Vector3.ClampMagnitude(new Vector3(0, m_Rig.velocity.y, 0), m_JumpVelocityCap).y;
-
-        m_Rig.velocity = new Vector3(_CappedXZ.x, _CappedY, _CappedXZ.z);
-    }
-
-    #endregion Custom Functions
-
+    #endregion
     #region Unity built-in Functions
 
     private void Start()
     {
         m_CameraTransform = Camera.transform;
-        m_Rig = gameObject.GetComponent<Rigidbody>();
+        m_Rig = gameObject.GetComponent<Rigidbody2D>();
+        m_PlayerCollider = GetComponent<BoxCollider2D>();
     }
 
     private void Update()
     {
         SpawnTrapCheck();
+        
+        LastPos = transform.position;
 
-        Vector3 _tempVelocity = new Vector3();
-        if (Input.GetKey(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.D))
         {
-            _tempVelocity = WalkSpeed;
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            _tempVelocity = -WalkSpeed;
+            //TODO roll
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            _tempVelocity += JumpPower;
+            RaycastHit2D raycastHit = Physics2D.Raycast(transform.position, -transform.up, m_PlayerCollider.bounds.extents.y+.1f, LayerMask.GetMask("Floor"));
+            if (raycastHit.collider)
+            {
+                m_CurrentJump = m_JumpPower;
+            }
         }
-        AddForce(_tempVelocity);
+        if (invincible)
+        {
+            StartCoroutine(SetInvincible());
+            //TODO let the little girl catch up
+        }
     }
 
     private void LateUpdate()
     {
-        UpdateCamera(gameObject.transform.position);
-        //AddForce(WalkSpeed + JumpPower);
+        m_CameraOffset = Vector3.Lerp(m_CameraOffset, new Vector3(-3+(-m_Rig.velocity.x/5), m_CameraOffset.y, m_CameraOffset.z), 1f * Time.deltaTime);
+        Vector3 Pos = UpdateCamera(gameObject.transform.position, m_CameraOffset, LastPos);
+
+        Camera.transform.position = Pos;
+
+        m_Rig.velocity = AddForce(m_WalkSpeed + m_CurrentJump, m_Rig, m_SpeedVelocityCap, m_JumpVelocityCap);
+        m_CurrentJump = new Vector2();
     }
 
     #endregion Unity built-in Functions
