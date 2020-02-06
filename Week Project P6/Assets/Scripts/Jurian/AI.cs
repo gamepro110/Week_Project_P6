@@ -90,7 +90,7 @@ public class AI : MovementMechanics
         m_rig = gameObject.GetComponent<Rigidbody2D>();
         manager = FindObjectOfType<GameManager>();
         velocityCap = player.SpeedVelocityCap;
-        CatchUp(3f);
+        CatchUp(10f);
 
         m_rig.velocity = new Vector2(-velocityCap,m_rig.velocity.y);
     }
