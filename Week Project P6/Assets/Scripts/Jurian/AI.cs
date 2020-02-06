@@ -32,7 +32,7 @@ public class AI : MovementMechanics
 
     private IEnumerator SpeedAdjustment(float t)
     {
-        velocityCap *= 3;
+        velocityCap *= 2;
 
         speed = 10;
         yield return new WaitUntil(() => (player.gameObject.transform.position - transform.position).magnitude < 3f);
