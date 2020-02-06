@@ -198,7 +198,7 @@ public class Player : MovementMechanics
                 if (raycastHit.collider)
                 {
                     Vector3 spawnpos = transform.position;
-                    spawnpos.x -= -1f;
+                    spawnpos.x -= -1.5f;
                     Instantiate(m_heldTrap, spawnpos, Quaternion.identity);
                     m_heldTrap = null;
                 }
