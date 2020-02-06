@@ -27,11 +27,11 @@ public class AI : MovementMechanics
         }
     }
 
-    IEnumerator SpeedAdjustment(float t)
+    private IEnumerator SpeedAdjustment(float t)
     {
         speed = 10;
         yield return new WaitForSeconds(t);
-        if (Reset) 
+        if (Reset)
         {
             Reset = false;
             StartCoroutine(SpeedAdjustment(t));
@@ -47,7 +47,7 @@ public class AI : MovementMechanics
     /// <param name="t"></param>
     public void CatchUp(float t)
     {
-        if (!start) 
+        if (!start)
             Reset = true;
         start = false;
 
@@ -57,6 +57,7 @@ public class AI : MovementMechanics
             transform.position = new Vector3(Camera.main.transform.position.x + 10, transform.position.y, 0);
         }
     }
+
     /// <summary>
     /// Called upon when the AI needs to be stunned (gets a drawback).
     /// </summary>
@@ -67,6 +68,7 @@ public class AI : MovementMechanics
         start = true;
         StartCoroutine(Flicker());
     }
+
     private void Start()
     {
         m_startPos = transform.position;

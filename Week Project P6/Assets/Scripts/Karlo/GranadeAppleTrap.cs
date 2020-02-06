@@ -9,7 +9,7 @@ public class GranadeAppleTrap : Trap
         if (collision.gameObject == m_loli.gameObject)
         {
             Debug.Log("you touched a loli, kono hentai");
-            //m_loli.NerfVelocity();
+            m_loli.Stun();
         }
         else if (collision.gameObject == m_player.gameObject)
         {
