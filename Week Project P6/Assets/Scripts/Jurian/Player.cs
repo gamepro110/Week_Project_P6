@@ -45,6 +45,8 @@ public class Player : MovementMechanics
         set { invincible = value; }
     }
 
+    public Rigidbody2D Rig => m_Rig;
+
     #region temp reset
 
     private Vector2 m_startPos = new Vector2();
