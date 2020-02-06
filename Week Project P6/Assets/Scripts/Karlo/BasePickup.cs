@@ -2,17 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum PickupType
-{
-    Trap,
-}
-
-public class BasePickup : MonoBehaviour
+public abstract class BasePickup : MonoBehaviour
 {
     protected Player m_player;
 
     private void Start()
     {
+        EventManager.ResetLevelEvent += ResetItem;
         m_player = FindObjectOfType<Player>();
     }
 
@@ -25,7 +21,9 @@ public class BasePickup : MonoBehaviour
         }
     }
 
-    protected virtual void DoPickup()
-    {
-    }
+    protected abstract void DoPickup();
+
+    protected abstract void ResetItem();
+
+    protected abstract void OnDestroy();
 }

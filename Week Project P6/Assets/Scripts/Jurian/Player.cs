@@ -13,15 +13,18 @@ public class Player : MovementMechanics
 
     [Header("Movement components")]
     [SerializeField, Range(10, 100), Tooltip("The speed cap in magnitudes (Rig.Velocity).Magnitude (excluding Y)")] private float m_SpeedVelocityCap = 10;
+
     [SerializeField, Range(1f, 10f)] private float m_maxDashDebounce = 3f;
     [SerializeField, Range(10, 100), Tooltip("The max jump height velocity cap in magnitudes (Rig.Velocity).Magnitude (excluding X and Z)")] private float m_JumpVelocityCap = 10;
-    
+
     [SerializeField] private Trap m_heldTrap = null;
     [SerializeField] private Vector2 m_WalkSpeed = new Vector2();
     [SerializeField] private Vector2 m_JumpPower = new Vector2();
 
     private Transform m_CameraTransform;
     private Rigidbody2D m_Rig;
+
+    private Vector2 m_oldWalkSpeed;
 
     private Vector2 m_CurrentJump;
     private Vector3 LastPos;
@@ -32,6 +35,7 @@ public class Player : MovementMechanics
     private bool Debounce;
 
     private bool invincible;
+
     /// <summary>
     /// Set the invincible state to true or false
     /// </summary>
@@ -41,10 +45,17 @@ public class Player : MovementMechanics
         set { invincible = value; }
     }
 
+    #region temp reset
+
+    private Vector2 m_startPos = new Vector2();
+
+    #endregion temp reset
+
     #endregion Variables
 
     #region Custom Functions
-    private IEnumerator Flicker()
+
+    internal IEnumerator Flicker()
     {
         SpriteRenderer renderer = GetComponent<SpriteRenderer>();
         while (invincible)
@@ -55,6 +66,7 @@ public class Player : MovementMechanics
             renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, 1f);
         }
     }
+
     private IEnumerator Dash()
     {
         m_time = 0f;
@@ -62,19 +74,31 @@ public class Player : MovementMechanics
         m_WalkSpeed = new Vector2(m_WalkSpeed.x * 3, 0);
         yield return new WaitForSeconds(1f);
         m_WalkSpeed = _OldVelocity;
-
     }
+
     private IEnumerator SetInvincible()
     {
-        Vector2 _OldWalkspeed = m_WalkSpeed;
-        m_Rig.velocity = new Vector2();
+        m_oldWalkSpeed = m_WalkSpeed;
+        ResetVelocity();
         m_WalkSpeed = new Vector2();
         StartCoroutine(Flicker());
         yield return new WaitForSeconds(.2f);
-        m_WalkSpeed = _OldWalkspeed;
+        m_WalkSpeed = m_oldWalkSpeed;
         yield return new WaitForSeconds(3f);
         invincible = false;
         Debounce = false;
+    }
+
+    internal void ResetVelocity()
+    {
+        m_Rig.velocity /= 2;
+    }
+
+    internal IEnumerator SlowEffect(float effectTime)
+    {
+        m_WalkSpeed /= 2;
+        yield return new WaitForSeconds(effectTime);
+        m_WalkSpeed = m_oldWalkSpeed;
     }
 
     #endregion Custom Functions
@@ -86,10 +110,27 @@ public class Player : MovementMechanics
         m_CameraTransform = Camera.transform;
         m_Rig = gameObject.GetComponent<Rigidbody2D>();
         m_PlayerCollider = GetComponent<BoxCollider2D>();
+        m_oldWalkSpeed = m_WalkSpeed;
+
+        #region temp reset
+
+        m_startPos = transform.position;
+
+        #endregion temp reset
     }
 
     private void Update()
     {
+        #region temp reset
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            transform.position = m_startPos;
+            EventManager.ResetLevelFunc();
+        }
+
+        #endregion temp reset
+
         m_time += Time.deltaTime;
         SpawnTrapCheck();
         RaycastHit2D raycastHit = Physics2D.Raycast(transform.position, -transform.up, m_PlayerCollider.bounds.extents.y + .1f, LayerMask.GetMask("StaticFloor") + LayerMask.GetMask("Floor"));
@@ -113,7 +154,7 @@ public class Player : MovementMechanics
         {
             if (Input.GetKeyDown(KeyCode.D)) // Roll
             {
-                if(m_time >= m_maxDashDebounce)
+                if (m_time >= m_maxDashDebounce)
                     StartCoroutine(Dash());
             }
 
@@ -136,24 +177,28 @@ public class Player : MovementMechanics
         m_Rig.velocity = AddForce(m_WalkSpeed + m_CurrentJump, m_Rig, m_SpeedVelocityCap, m_JumpVelocityCap);
         m_CurrentJump = new Vector2();
     }
-    #endregion
+
+    #endregion Unity built-in Functions
 
     public void PickupTrap(Trap _trap)
     {
-        m_heldTrap = _trap;
+        if (m_heldTrap == null)
+        {
+            m_heldTrap = _trap;
+        }
     }
 
     public void SpawnTrapCheck()
     {
         if (m_heldTrap != null)
         {
-            if (Input.GetKeyDown(KeyCode.F))
+            if (Input.GetKeyDown(KeyCode.C))
             {
-                RaycastHit2D raycastHit = Physics2D.Raycast(transform.position, -transform.up, m_PlayerCollider.bounds.extents.y + .1f, LayerMask.GetMask("Floor"));
+                RaycastHit2D raycastHit = Physics2D.Raycast(transform.position, -transform.up, m_PlayerCollider.bounds.extents.y + .1f);
                 if (raycastHit.collider)
                 {
                     Vector3 spawnpos = transform.position;
-                    spawnpos.y -= 0.5f;
+                    spawnpos.x -= -1f;
                     Instantiate(m_heldTrap, spawnpos, Quaternion.identity);
                     m_heldTrap = null;
                 }
