@@ -9,11 +9,11 @@ public class CarrotTrap : Trap
         if (collision.gameObject == m_loli.gameObject)
         {
             Debug.Log("you hit a loli, kono hentai");
-            //TODO wait for ai to work?
+            m_loli.Stun();
         }
         else if (collision.gameObject == m_player.gameObject)
         {
-            m_player.ResetVelocity();
+            m_player.NerfVelocity();
             StartCoroutine(m_player.SlowEffect(1f));
             m_player.Invincible = true;
             m_invincibleRoutine = StartCoroutine(m_player.Flicker());

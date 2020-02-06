@@ -9,6 +9,8 @@ public class AI : MovementMechanics
     private Rigidbody2D m_rig;
     private GameManager manager;
 
+    private Vector3 m_startPos;
+
     private float speed = 0;
     private bool Reset = false;
     private bool start = true;
@@ -25,11 +27,11 @@ public class AI : MovementMechanics
         }
     }
 
-    IEnumerator SpeedAdjustment(float t)
+    private IEnumerator SpeedAdjustment(float t)
     {
         speed = 10;
         yield return new WaitForSeconds(t);
-        if (Reset) 
+        if (Reset)
         {
             Reset = false;
             StartCoroutine(SpeedAdjustment(t));
@@ -45,7 +47,7 @@ public class AI : MovementMechanics
     /// <param name="t"></param>
     public void CatchUp(float t)
     {
-        if (!start) 
+        if (!start)
             Reset = true;
         start = false;
 
@@ -55,6 +57,7 @@ public class AI : MovementMechanics
             transform.position = new Vector3(Camera.main.transform.position.x + 10, transform.position.y, 0);
         }
     }
+
     /// <summary>
     /// Called upon when the AI needs to be stunned (gets a drawback).
     /// </summary>
@@ -65,14 +68,19 @@ public class AI : MovementMechanics
         start = true;
         StartCoroutine(Flicker());
     }
+
     private void Start()
     {
+        m_startPos = transform.position;
+        EventManager.ResetLevelEvent += ResetLevelEvent;
+
         m_SpriteRenderer = gameObject.GetComponent<Renderer>();
         player = FindObjectOfType<Player>().gameObject;
         m_rig = gameObject.GetComponent<Rigidbody2D>();
         manager = FindObjectOfType<GameManager>();
         CatchUp(5f);
     }
+
     private void Update()
     {
         m_rig.velocity = AddForce(new Vector2(-speed, 0), m_rig, 10, 55.1f);
@@ -81,11 +89,27 @@ public class AI : MovementMechanics
             Stun();
         }
     }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.GetInstanceID() == player.GetInstanceID())
+        if (collision.gameObject.GetInstanceID() == player.GetInstanceID())
         {
             manager.Death();
         }
+    }
+
+    private void OnDestroy()
+    {
+        EventManager.ResetLevelEvent -= ResetLevelEvent;
+    }
+
+    private void ResetLevelEvent()
+    {
+        transform.position = m_startPos;
+    }
+
+    public void NerfVelocity()
+    {
+        m_rig.velocity /= 2;
     }
 }

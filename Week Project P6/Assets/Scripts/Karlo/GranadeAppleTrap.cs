@@ -8,12 +8,12 @@ public class GranadeAppleTrap : Trap
     {
         if (collision.gameObject == m_loli.gameObject)
         {
-            Debug.Log("you hit a loli, kono hentai");
-            //TODO wait for ai to work?
+            Debug.Log("you touched a loli, kono hentai");
+            m_loli.Stun();
         }
         else if (collision.gameObject == m_player.gameObject)
         {
-            m_player.ResetVelocity();
+            m_player.NerfVelocity();
             StartCoroutine(m_player.SlowEffect(1f));
             m_player.Invincible = true;
             m_invincibleRoutine = StartCoroutine(m_player.Flicker());

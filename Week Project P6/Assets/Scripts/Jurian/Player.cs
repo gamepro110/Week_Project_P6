@@ -45,6 +45,8 @@ public class Player : MovementMechanics
         set { invincible = value; }
     }
 
+    public Rigidbody2D Rig => m_Rig;
+
     #region temp reset
 
     private Vector2 m_startPos = new Vector2();
@@ -79,7 +81,7 @@ public class Player : MovementMechanics
     private IEnumerator SetInvincible()
     {
         m_oldWalkSpeed = m_WalkSpeed;
-        ResetVelocity();
+        NerfVelocity();
         m_WalkSpeed = new Vector2();
         StartCoroutine(Flicker());
         yield return new WaitForSeconds(.2f);
@@ -89,7 +91,7 @@ public class Player : MovementMechanics
         Debounce = false;
     }
 
-    internal void ResetVelocity()
+    internal void NerfVelocity()
     {
         m_Rig.velocity /= 2;
     }
@@ -198,7 +200,7 @@ public class Player : MovementMechanics
                 if (raycastHit.collider)
                 {
                     Vector3 spawnpos = transform.position;
-                    spawnpos.x -= -1f;
+                    spawnpos.x -= -1.5f;
                     Instantiate(m_heldTrap, spawnpos, Quaternion.identity);
                     m_heldTrap = null;
                 }
