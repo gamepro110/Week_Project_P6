@@ -11,11 +11,10 @@ public class AI : MovementMechanics
 
     private Vector3 m_startPos;
 
-    private float speed = 0;
+    private float speed = 10;
     private bool Reset = false;
     private bool start = true;
 
-    private bool begingame = true;
     private bool CatchingUp;
 
     private float velocityCap;
@@ -33,9 +32,7 @@ public class AI : MovementMechanics
 
     private IEnumerator SpeedAdjustment(float t)
     {
-        if (!begingame)
-            velocityCap *= 2;
-        begingame = false;
+        velocityCap *= 3;
 
         speed = 10;
         yield return new WaitUntil(() => (player.gameObject.transform.position - transform.position).magnitude < 3f);
@@ -63,7 +60,7 @@ public class AI : MovementMechanics
         start = false;
 
         StartCoroutine(SpeedAdjustment(t));
-        if (!m_SpriteRenderer.isVisible && t != 3f)
+        if (!m_SpriteRenderer.isVisible)
         {
             transform.position = new Vector3(Camera.main.transform.position.x + 10, transform.position.y, 0);
         }
@@ -90,7 +87,7 @@ public class AI : MovementMechanics
         m_rig = gameObject.GetComponent<Rigidbody2D>();
         manager = FindObjectOfType<GameManager>();
         velocityCap = player.SpeedVelocityCap;
-        CatchUp(3f);
+        CatchUp(10f);
 
         m_rig.velocity = new Vector2(-velocityCap,m_rig.velocity.y);
     }
@@ -102,11 +99,18 @@ public class AI : MovementMechanics
         {
             Stun();
         }
-        if (!m_SpriteRenderer.isVisible && !CatchingUp)
-            Stun();
 
         if (m_SpriteRenderer.isVisible)
             CatchingUp = false;
+    }
+
+    private void LateUpdate()
+    {
+        Debug.Log(m_SpriteRenderer.isVisible);
+        if (!m_SpriteRenderer.isVisible && !CatchingUp)
+        {
+            Stun();
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
