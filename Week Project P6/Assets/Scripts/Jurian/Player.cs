@@ -49,7 +49,7 @@ public class Player : MovementMechanics
 
     #region temp reset
 
-    private Vector2 m_startPos = new Vector2();
+    [SerializeField] private Transform m_startPos;
 
     #endregion temp reset
 
@@ -116,7 +116,9 @@ public class Player : MovementMechanics
 
         #region temp reset
 
-        m_startPos = transform.position;
+        m_startPos.position = transform.position;
+
+        EventManager.ResetLevelEvent += ResetLevelEvent;
 
         #endregion temp reset
     }
@@ -127,7 +129,6 @@ public class Player : MovementMechanics
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            transform.position = m_startPos;
             EventManager.ResetLevelFunc();
         }
 
@@ -180,6 +181,11 @@ public class Player : MovementMechanics
         m_CurrentJump = new Vector2();
     }
 
+    private void OnDestroy()
+    {
+        EventManager.ResetLevelEvent -= ResetLevelEvent;
+    }
+
     #endregion Unity built-in Functions
 
     public void PickupTrap(Trap _trap)
@@ -207,4 +213,6 @@ public class Player : MovementMechanics
             }
         }
     }
+
+    private void ResetLevelEvent() => transform.position = m_startPos.position;
 }

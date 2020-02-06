@@ -12,14 +12,18 @@ public class GameManager : MonoBehaviour
         player = FindObjectOfType<Player>();
         ai = FindObjectOfType<AI>();
     }
+
     public void Bumped()
     {
         player.Invincible = true;
         ai.CatchUp(10f);
     }
-    
+
     public void Death()
     {
-        Time.timeScale = 0f;
+        //Time.timeScale = 0f;
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPaused = true;
+#endif
     }
 }
