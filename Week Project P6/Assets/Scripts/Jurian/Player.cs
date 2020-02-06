@@ -5,17 +5,16 @@ using UnityEngine;
 public class Player : MovementMechanics
 {
     #region Variables
-
-    [Header("Setup")]
-    [SerializeField] private Camera Camera = null;
-
-    [SerializeField, Tooltip("Distance that'll be set between the player and the camera")] private Vector3 m_CameraOffset = new Vector3();
-
     [Header("Movement components")]
-    [SerializeField, Range(10, 100), Tooltip("The speed cap in magnitudes (Rig.Velocity).Magnitude (excluding Y)")] private float m_SpeedVelocityCap = 10;
+    [SerializeField, Range(0, 100), Tooltip("The speed cap in magnitudes (Rig.Velocity).Magnitude (excluding Y)")] private float m_SpeedVelocityCap = 10;
+    public float SpeedVelocityCap
+    {
+        get { return m_SpeedVelocityCap; }
+    }
+
 
     [SerializeField, Range(1f, 10f)] private float m_maxDashDebounce = 3f;
-    [SerializeField, Range(10, 100), Tooltip("The max jump height velocity cap in magnitudes (Rig.Velocity).Magnitude (excluding X and Z)")] private float m_JumpVelocityCap = 10;
+    [SerializeField, Range(0, 100), Tooltip("The max jump height velocity cap in magnitudes (Rig.Velocity).Magnitude (excluding X and Z)")] private float m_JumpVelocityCap = 10;
 
     [SerializeField] private Trap m_heldTrap = null;
     [SerializeField] private Vector2 m_WalkSpeed = new Vector2();
@@ -109,7 +108,6 @@ public class Player : MovementMechanics
 
     private void Start()
     {
-        m_CameraTransform = Camera.transform;
         m_Rig = gameObject.GetComponent<Rigidbody2D>();
         m_PlayerCollider = GetComponent<BoxCollider2D>();
         m_oldWalkSpeed = m_WalkSpeed;
@@ -171,13 +169,11 @@ public class Player : MovementMechanics
 
     private void LateUpdate()
     {
-        m_CameraOffset = Vector3.Lerp(m_CameraOffset, new Vector3(-5 + (-m_Rig.velocity.x / 5), m_CameraOffset.y, m_CameraOffset.z), 1f * Time.deltaTime);
-        Vector3 Pos = UpdateCamera(gameObject.transform.position, m_CameraOffset, LastPos);
-
-        Camera.transform.position = Pos;
-
         m_Rig.velocity = AddForce(m_WalkSpeed + m_CurrentJump, m_Rig, m_SpeedVelocityCap, m_JumpVelocityCap);
         m_CurrentJump = new Vector2();
+
+        if (!invincible)
+            m_Rig.velocity = new Vector2(-m_SpeedVelocityCap, m_Rig.velocity.y);
     }
 
     #endregion Unity built-in Functions

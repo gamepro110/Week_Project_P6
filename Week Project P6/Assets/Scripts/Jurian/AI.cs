@@ -5,7 +5,7 @@ using UnityEngine;
 public class AI : MovementMechanics
 {
     private Renderer m_SpriteRenderer;
-    private GameObject player;
+    private Player player;
     private Rigidbody2D m_rig;
     private GameManager manager;
 
@@ -15,6 +15,10 @@ public class AI : MovementMechanics
     private bool Reset = false;
     private bool start = true;
 
+    private bool begingame = true;
+    private bool CatchingUp;
+
+    private float velocityCap;
     internal IEnumerator Flicker()
     {
         SpriteRenderer renderer = GetComponent<SpriteRenderer>();
@@ -29,8 +33,14 @@ public class AI : MovementMechanics
 
     private IEnumerator SpeedAdjustment(float t)
     {
+        if (!begingame)
+            velocityCap *= 2;
+        begingame = false;
+
         speed = 10;
-        yield return new WaitForSeconds(t);
+        yield return new WaitUntil(() => (player.gameObject.transform.position - transform.position).magnitude < 3f);
+        velocityCap = player.SpeedVelocityCap;
+        yield return new WaitForSeconds(t-3f);
         if (Reset)
         {
             Reset = false;
@@ -47,12 +57,13 @@ public class AI : MovementMechanics
     /// <param name="t"></param>
     public void CatchUp(float t)
     {
+        CatchingUp = true;
         if (!start)
             Reset = true;
         start = false;
 
         StartCoroutine(SpeedAdjustment(t));
-        if (!m_SpriteRenderer.isVisible && t != 5f)
+        if (!m_SpriteRenderer.isVisible && t != 3f)
         {
             transform.position = new Vector3(Camera.main.transform.position.x + 10, transform.position.y, 0);
         }
@@ -75,24 +86,32 @@ public class AI : MovementMechanics
         EventManager.ResetLevelEvent += ResetLevelEvent;
 
         m_SpriteRenderer = gameObject.GetComponent<Renderer>();
-        player = FindObjectOfType<Player>().gameObject;
+        player = FindObjectOfType<Player>();
         m_rig = gameObject.GetComponent<Rigidbody2D>();
         manager = FindObjectOfType<GameManager>();
-        CatchUp(5f);
+        velocityCap = player.SpeedVelocityCap;
+        CatchUp(3f);
+
+        m_rig.velocity = new Vector2(-velocityCap,m_rig.velocity.y);
     }
 
     private void Update()
     {
-        m_rig.velocity = AddForce(new Vector2(-speed, 0), m_rig, 10, 55.1f);
+        m_rig.velocity = AddForce(new Vector2(-speed, 0), m_rig, velocityCap, 55.1f);
         if (Input.GetKeyDown(KeyCode.X))
         {
             Stun();
         }
+        if (!m_SpriteRenderer.isVisible && !CatchingUp)
+            Stun();
+
+        if (m_SpriteRenderer.isVisible)
+            CatchingUp = false;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.GetInstanceID() == player.GetInstanceID())
+        if (collision.gameObject.GetInstanceID() == player.gameObject.GetInstanceID())
         {
             manager.Death();
         }
