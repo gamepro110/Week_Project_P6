@@ -8,7 +8,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6709819708071531218}
+  - component: {fileID: 1574487328931887113}
   - component: {fileID: 7895544556596990267}
   - component: {fileID: 4886495325426021874}
   - component: {fileID: 8766155249862704229}
@@ -19,8 +19,8 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &6709819708071531218
-RectTransform:
+--- !u!4 &1574487328931887113
+Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -33,11 +33,6 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 106.48, y: -0.17}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7895544556596990267
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50,7 +45,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 326e3316cb265384cb79d3dc51a3c0f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_trap: {fileID: 6315971215917175050, guid: d40733caabe307146bf4a36a363f6bcd, type: 3}
+  m_traps:
+  - {fileID: 8038392410173707027, guid: e07e9d01251eaf04da4c4f66bdcc121d, type: 3}
+  - {fileID: 2312574791689610352, guid: b913b05c53a807c41a63f95410b5fb39, type: 3}
 --- !u!212 &4886495325426021874
 SpriteRenderer:
   m_ObjectHideFlags: 0

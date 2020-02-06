@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9108106820524974702}
+  - component: {fileID: 2312574791689610352}
   - component: {fileID: 6315971215917175048}
   - component: {fileID: 6315971215917175049}
-  - component: {fileID: 6315971215917175050}
   m_Layer: 0
-  m_Name: Empty Trap
+  m_Name: Granade apple Trap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33,6 +33,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2312574791689610352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6315971215917175052}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3ad09b69b9c7ab428c6a9f2044aa473, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_uses: 1
 --- !u!212 &6315971215917175048
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -72,8 +85,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
-  m_Sprite: {fileID: 21300000, guid: a438b642592d4944e8d281b957be2419, type: 3}
-  m_Color: {r: 1, g: 0.5, b: 0, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 153dc422ccd703f40af372cc55fa1408, type: 3}
+  m_Color: {r: 1, g: 0.5, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -109,15 +122,3 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &6315971215917175050
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6315971215917175052}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ebc1ba0d83ec7d4389f32cd3bbfe854, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
