@@ -14,7 +14,7 @@ public class CarrotTrap : Trap
         //else
         if (collision.gameObject == m_player.gameObject)
         {
-            m_player.ResetVelocity();
+            m_player.NerfVelocity();
             StartCoroutine(m_player.SlowEffect(1f));
             m_player.Invincible = true;
             m_invincibleRoutine = StartCoroutine(m_player.Flicker());

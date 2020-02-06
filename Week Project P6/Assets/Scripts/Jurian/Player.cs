@@ -79,7 +79,7 @@ public class Player : MovementMechanics
     private IEnumerator SetInvincible()
     {
         m_oldWalkSpeed = m_WalkSpeed;
-        ResetVelocity();
+        NerfVelocity();
         m_WalkSpeed = new Vector2();
         StartCoroutine(Flicker());
         yield return new WaitForSeconds(.2f);
@@ -89,7 +89,7 @@ public class Player : MovementMechanics
         Debounce = false;
     }
 
-    internal void ResetVelocity()
+    internal void NerfVelocity()
     {
         m_Rig.velocity /= 2;
     }

@@ -6,15 +6,14 @@ public class GranadeAppleTrap : Trap
 {
     protected override void OnTriggerEnter2D(Collider2D collision)
     {
-        //if (collision.gameObject == m_loli.gameObject)
-        //{
-        //    Debug.Log("you hit a loli, kono hentai");
-        //    //TODO wait for ai to work?
-        //}
-        //else
-        if (collision.gameObject == m_player.gameObject)
+        if (collision.gameObject == m_loli.gameObject)
         {
-            m_player.ResetVelocity();
+            Debug.Log("you touched a loli, kono hentai");
+            //m_loli.NerfVelocity();
+        }
+        else if (collision.gameObject == m_player.gameObject)
+        {
+            m_player.NerfVelocity();
             StartCoroutine(m_player.SlowEffect(1f));
             m_player.Invincible = true;
             m_invincibleRoutine = StartCoroutine(m_player.Flicker());
