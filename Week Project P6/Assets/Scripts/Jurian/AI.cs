@@ -96,10 +96,12 @@ public class AI : MovementMechanics
     private void Update()
     {
         m_rig.velocity = AddForce(new Vector2(-speed, 0), m_rig, velocityCap, 55.1f);
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            Stun();
-        }
+        transform.position = new Vector3(transform.position.x, -2.61f);
+
+        //if (Input.GetKeyDown(KeyCode.X))
+        //{
+        //    Stun();
+        //}
 
         if (m_SpriteRenderer.isVisible)
             CatchingUp = false;
@@ -130,10 +132,5 @@ public class AI : MovementMechanics
     private void ResetLevelEvent()
     {
         transform.position = m_startPos;
-    }
-
-    public void NerfVelocity()
-    {
-        m_rig.velocity /= 2;
     }
 }
