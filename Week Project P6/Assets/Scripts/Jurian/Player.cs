@@ -5,13 +5,14 @@ using UnityEngine;
 public class Player : MovementMechanics
 {
     #region Variables
+
     [Header("Movement components")]
     [SerializeField, Range(0, 100), Tooltip("The speed cap in magnitudes (Rig.Velocity).Magnitude (excluding Y)")] private float m_SpeedVelocityCap = 10;
+
     public float SpeedVelocityCap
     {
         get { return m_SpeedVelocityCap; }
     }
-
 
     [SerializeField, Range(1f, 10f)] private float m_maxDashDebounce = 3f;
     [SerializeField, Range(0, 100), Tooltip("The max jump height velocity cap in magnitudes (Rig.Velocity).Magnitude (excluding X and Z)")] private float m_JumpVelocityCap = 10;
@@ -112,25 +113,18 @@ public class Player : MovementMechanics
         m_PlayerCollider = GetComponent<BoxCollider2D>();
         m_oldWalkSpeed = m_WalkSpeed;
 
-        #region temp reset
-
         m_startPos.position = transform.position;
-
         EventManager.ResetLevelEvent += ResetLevelEvent;
-
-        #endregion temp reset
     }
 
     private void Update()
     {
-        #region temp reset
-
+#if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             EventManager.ResetLevelFunc();
         }
-
-        #endregion temp reset
+#endif
 
         m_time += Time.deltaTime;
         SpawnTrapCheck();
@@ -145,6 +139,7 @@ public class Player : MovementMechanics
                 m_WalkSpeed = new Vector2(m_WalkSpeed.x, -100);
             }
         }
+
         if (invincible && !Debounce)
         {
             Debounce = true;
@@ -156,7 +151,9 @@ public class Player : MovementMechanics
             if (Input.GetKeyDown(KeyCode.D)) // Roll
             {
                 if (m_time >= m_maxDashDebounce)
+                {
                     StartCoroutine(Dash());
+                }
             }
 
             if (Input.GetKeyDown(KeyCode.Space)) // jump
@@ -166,15 +163,14 @@ public class Player : MovementMechanics
 
             m_WalkSpeed = new Vector2(m_WalkSpeed.x, 0);
         }
-    }
 
-    private void LateUpdate()
-    {
         m_Rig.velocity = AddForce(m_WalkSpeed + m_CurrentJump, m_Rig, m_SpeedVelocityCap, m_JumpVelocityCap);
         m_CurrentJump = new Vector2();
 
         if (!invincible)
+        {
             m_Rig.velocity = new Vector2(-m_SpeedVelocityCap, m_Rig.velocity.y);
+        }
     }
 
     private void OnDestroy()
