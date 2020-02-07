@@ -35,7 +35,7 @@ public class AI : MovementMechanics
         velocityCap *= 2;
 
         speed = 10;
-        yield return new WaitUntil(() => (player.gameObject.transform.position - transform.position).magnitude < 3f);
+        yield return new WaitUntil(() => (new Vector2(player.gameObject.transform.position.x,0) - new Vector2(transform.position.x,0)).magnitude < 3f);
         velocityCap = player.SpeedVelocityCap;
         yield return new WaitForSeconds(t-3f);
         if (Reset)
