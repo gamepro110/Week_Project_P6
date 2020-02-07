@@ -18,6 +18,7 @@ public class AI : MovementMechanics
     private bool CatchingUp;
 
     private float velocityCap;
+
     internal IEnumerator Flicker()
     {
         SpriteRenderer renderer = GetComponent<SpriteRenderer>();
@@ -37,7 +38,7 @@ public class AI : MovementMechanics
         speed = 10;
         yield return new WaitUntil(() => (player.gameObject.transform.position - transform.position).magnitude < 3f);
         velocityCap = player.SpeedVelocityCap;
-        yield return new WaitForSeconds(t-3f);
+        yield return new WaitForSeconds(t - 3f);
         if (Reset)
         {
             Reset = false;
@@ -89,7 +90,7 @@ public class AI : MovementMechanics
         velocityCap = player.SpeedVelocityCap;
         CatchUp(10f);
 
-        m_rig.velocity = new Vector2(-velocityCap,m_rig.velocity.y);
+        m_rig.velocity = new Vector2(-velocityCap, m_rig.velocity.y);
     }
 
     private void Update()
@@ -106,7 +107,7 @@ public class AI : MovementMechanics
 
     private void LateUpdate()
     {
-        Debug.Log(m_SpriteRenderer.isVisible);
+        //Debug.Log(m_SpriteRenderer.isVisible);
         if (!m_SpriteRenderer.isVisible && !CatchingUp)
         {
             Stun();
