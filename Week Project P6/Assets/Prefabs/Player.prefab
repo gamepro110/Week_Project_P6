@@ -96,9 +96,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01025724f9df512408b9e9da4bb10c05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SpeedVelocityCap: 5
-  m_maxDashDebounce: 3
-  m_JumpVelocityCap: 55.1
+  m_SpeedVelocityCap: 7
+  m_maxDashDebounce: 3.7
+  m_JumpVelocityCap: 61
   m_heldTrap: {fileID: 0}
   m_WalkSpeed: {x: -10, y: 0}
   m_JumpPower: {x: 0, y: 300}
